@@ -1,0 +1,21 @@
+{
+  "nav_home": "Home",
+  "nav_menu": "Menu",
+  "nav_builder": "Builder",
+  "nav_orders": "Orders",
+  "nav_branches": "Branches",
+  "nav_cart": "Cart",
+  "nav_login": "Login",
+
+  "hero_title_line1": "A burger bite",
+  "hero_title_highlight": "your way,",
+  "hero_title_line2": "delivered while you track it",
+  "hero_subtitle": "Pick your branch, order from the menu, or build your own burger piece by piece — and watch it arrive live.",
+  "hero_cta_builder": "Build Your Burger Now",
+  "hero_cta_menu": "View Menu",
+
+  "footer_contact": "Contact Us",
+  "footer_sohag": "Sohag: 010-8023-4407",
+  "footer_girga": "Girga: 010-8022-4406",
+  "footer_rights": "© 2026 All rights reserved"
+}
