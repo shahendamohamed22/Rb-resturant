@@ -39,9 +39,11 @@ function AuthModal({ show, onClose }) {
         token: response.data.accessToken,
         customerId: response.data.customerId,
         fullName: response.data.fullName,
+        role: response.data.role,
       }));
       resetAndClose();
     } catch (err) {
+      console.error('LOGIN ERROR:', err); 
       setErrorMsg('Login failed. Check your phone/password.');
     }
   };
@@ -74,6 +76,7 @@ function AuthModal({ show, onClose }) {
         token: response.data.accessToken,
         customerId: response.data.customerId,
         fullName: response.data.fullName,
+        role: response.data.role
       }));
       resetAndClose();
     } catch (err) {

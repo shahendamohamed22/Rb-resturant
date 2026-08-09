@@ -1,64 +1,55 @@
 import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+
 import Header from './shared/components/Header';
+import Footer from './shared/components/Footer';
+import BottomNav from './shared/components/BottomNav';
 import CartDrawer from './features/cart/CartDrawer';
-import LoginForm from './features/auth/LoginForm';
+import AuthModal from './features/auth/AuthModal';
+import HeroSection from './shared/components/HeroSection';
 import MenuSection from './features/menu/MenuSection';
 import BuilderSection from './features/builder/BuilderSection';
 import BranchesSection from './features/branches/BranchesSection';
 import CheckoutModal from './features/checkout/CheckoutModal';
-import { useDispatch } from 'react-redux';
-import { addOrder } from './features/orders/ordersSlice';
 import OrderConfirmationModal from './features/orders/OrderConfirmationModal';
 import OrdersSection from './features/orders/OrdersSection';
-import { simulateOrderProgress } from './features/orders/simulateOrderProgress';
 import TrackingModal from './features/orders/TrackingModal';
 import ReviewModal from './features/orders/ReviewModal';
-import HeroSection from './shared/components/HeroSection';
-import Footer from './shared/components/Footer';
-import BottomNav from './shared/components/BottomNav';
+import { simulateOrderProgress } from './features/orders/simulateOrderProgress';
+import { addOrder } from './features/orders/ordersSlice';
+import DriverApp from './features/driver/DriverApp';
 
-function App() {
-  const [showCart, setShowCart] = useState(false);
-  const [showAuth, setShowAuth] = useState(false);
-  const [showCheckout, setShowCheckout] = useState(false);
+function CustomerApp() {
   const dispatch = useDispatch();
+
+  const [showCart, setShowCart] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
   const [confirmedOrder, setConfirmedOrder] = useState(null);
   const [trackingOrderId, setTrackingOrderId] = useState(null);
   const [reviewOrderId, setReviewOrderId] = useState(null);
 
   return (
     <>
-      <Header
-        onCartClick={() => setShowCart(true)}
-        onAccountClick={() => setShowAuth(true)}
+      <Header onCartClick={() => setShowCart(true)} onAccountClick={() => {}} />
+
+      <HeroSection />
+      <MenuSection />
+      <BuilderSection />
+
+      <OrdersSection
+        onTrackOrder={(orderId) => setTrackingOrderId(orderId)}
+        onRateOrder={(orderId) => setReviewOrderId(orderId)}
       />
 
-      {/* Hero section */}
-      <HeroSection />
-
-      <main style={{ backgroundColor: 'var(--cream-50)' }}>
-
-        <MenuSection />
-
-        <BuilderSection />
-
-        <OrdersSection
-          onTrackOrder={(orderId) => setTrackingOrderId(orderId)}
-          onRateOrder={(orderId) => setReviewOrderId(orderId)}
-        />
-
-        <BranchesSection />
-      </main>
-      {/* Menu section */}
-
+      <BranchesSection />
       <Footer />
 
-      {/* Overlays */}
       <CartDrawer
         show={showCart}
         onClose={() => setShowCart(false)}
         onCheckout={() => { setShowCart(false); setShowCheckout(true); }}
       />
+
       <CheckoutModal
         show={showCheckout}
         onClose={() => setShowCheckout(false)}
@@ -68,10 +59,10 @@ function App() {
           simulateOrderProgress(order.orderId);
         }}
       />
+
       <OrderConfirmationModal
         order={confirmedOrder}
         onClose={() => setConfirmedOrder(null)}
-
       />
 
       <TrackingModal
@@ -82,15 +73,33 @@ function App() {
           setReviewOrderId(orderId);
         }}
       />
+
       <ReviewModal
         orderId={reviewOrderId}
         onClose={() => setReviewOrderId(null)}
       />
-      <LoginForm show={showAuth} onClose={() => setShowAuth(false)} />
 
       <BottomNav onCartClick={() => setShowCart(true)} />
     </>
   );
+}
+
+function App() {
+  const token = useSelector((state) => state.auth.token);
+  const role = useSelector((state) => state.auth.role);
+
+  // Not logged in → show ONLY the auth screen, nothing else
+  if (!token) {
+    return <AuthModal show={true} onClose={() => {}} forceOpen />;
+  }
+
+  // Logged in as driver → show driver interface
+  if (role === 'driver') {
+    return <DriverApp />;
+  }
+
+  // Logged in as customer → show the full customer site
+  return <CustomerApp />;
 }
 
 export default App;

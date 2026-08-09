@@ -23,8 +23,12 @@ const ordersSlice = createSlice({
       const order = state.items.find((o) => o.orderId === orderId);
       if (order) order.review = { rating, comment };
     },
+    markDriverAssigned: (state, action) => {
+      const order = state.items.find((o) => o.orderId === action.payload);
+      if (order) order.driverAssigned = true;
+    },
   },
 });
 
-export const { addOrder, updateOrderStage, setCustomerReceived, setOrderReview } = ordersSlice.actions;
+export const { addOrder, updateOrderStage, setCustomerReceived, setOrderReview, markDriverAssigned } = ordersSlice.actions;
 export default ordersSlice.reducer;

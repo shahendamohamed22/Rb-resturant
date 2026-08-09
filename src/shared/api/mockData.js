@@ -31,6 +31,13 @@ export const mockCustomer = {
   fullName: 'Ahmed Sami',
 };
 
+export const mockDriver = {
+  phone: '01099988877',
+  password: 'P@ssw0rd',
+  driverId: 'mock-driver-1',
+  fullName: 'Karim Adel',
+};
+
 export const mockBuilderOptions = [
   {
     groupKey: 'bun',
@@ -74,3 +81,4 @@ export const mockBuilderOptions = [
     ],
   },
 ];
+

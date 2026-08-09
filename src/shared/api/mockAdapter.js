@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import api from './axiosClient';
 import { ENDPOINTS } from './endpoints';
-import { mockMenu, mockBranches, mockCustomer, mockBuilderOptions } from './mockData';
+import { mockMenu, mockBranches, mockCustomer, mockDriver, mockBuilderOptions } from './mockData';
 
 const mock = new MockAdapter(api, { delayResponse: 400 });
 
@@ -14,34 +14,43 @@ mock.onGet(ENDPOINTS.branches).reply(200, mockBranches);
 // Customer login
 mock.onPost(ENDPOINTS.customerLogin).reply((config) => {
   const { phone, password } = JSON.parse(config.data);
+
   if (phone === mockCustomer.phone && password === mockCustomer.password) {
-    return [
-      200,
-      {
-        customerId: mockCustomer.customerId,
-        fullName: mockCustomer.fullName,
-        accessToken: 'mock-token-abc123',
-        refreshToken: 'mock-refresh-abc123',
-        expiresInSeconds: 3600,
-      },
-    ];
+    return [200, {
+      customerId: mockCustomer.customerId,
+      fullName: mockCustomer.fullName,
+      role: 'customer',
+      accessToken: 'mock-token-customer',
+      refreshToken: 'mock-refresh-customer',
+      expiresInSeconds: 3600,
+    }];
   }
+
+  if (phone === mockDriver.phone && password === mockDriver.password) {
+    return [200, {
+      customerId: mockDriver.driverId,
+      fullName: mockDriver.fullName,
+      role: 'driver',
+      accessToken: 'mock-token-driver',
+      refreshToken: 'mock-refresh-driver',
+      expiresInSeconds: 3600,
+    }];
+  }
+
   return [401, { title: 'Invalid credentials', errorCode: 'INVALID_CREDENTIALS' }];
 });
 
-// Customer signup — always succeeds for now
+// Signup دايمًا بيسجل عميل بس — مطابق للدوكيومنتيشن، مفيش سجل درايفر ذاتي
 mock.onPost(ENDPOINTS.customerSignup).reply((config) => {
   const { fullName } = JSON.parse(config.data);
-  return [
-    201,
-    {
-      customerId: 'mock-customer-new',
-      fullName,
-      accessToken: 'mock-token-new123',
-      refreshToken: 'mock-refresh-new123',
-      expiresInSeconds: 3600,
-    },
-  ];
+  return [201, {
+    customerId: crypto.randomUUID(),
+    fullName,
+    role: 'customer',
+    accessToken: 'mock-token-new123',
+    refreshToken: 'mock-refresh-new123',
+    expiresInSeconds: 3600,
+  }];
 });
 
 mock.onGet(ENDPOINTS.builderOptions).reply(200, mockBuilderOptions);
