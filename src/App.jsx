@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 import Header from './shared/components/Header';
 import Footer from './shared/components/Footer';
@@ -32,16 +33,8 @@ function CustomerApp() {
     <>
       <Header onCartClick={() => setShowCart(true)} onAccountClick={() => {}} />
 
-      <HeroSection />
-      <MenuSection />
-      <BuilderSection />
+      <Outlet context={{ onTrackOrder: setTrackingOrderId, onRateOrder: setReviewOrderId }} />
 
-      <OrdersSection
-        onTrackOrder={(orderId) => setTrackingOrderId(orderId)}
-        onRateOrder={(orderId) => setReviewOrderId(orderId)}
-      />
-
-      <BranchesSection />
       <Footer />
 
       <CartDrawer

@@ -1,6 +1,6 @@
 function Footer() {
     return (
-        <footer style={{ background: 'var(--maroon-950)', color: 'var(--cream-50)' }} className="py-4">
+        <footer style={{ background: 'var(--maroon-950)', color: 'var(--cream-50)' }} className="py-4 fixed-bottom">
             <div className="container d-flex align-items-center justify-content-between">
                 <div>
                     <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 24, color: 'var(--gold-400)' }}>

@@ -1,19 +1,16 @@
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { selectCartCount } from '../../features/cart/cartSlice';
 
-function scrollTo(id) {
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-}
-
 function BottomNav({ onCartClick }) {
+  const navigate = useNavigate();
   const cartCount = useSelector(selectCartCount);
 
   const items = [
-    { icon: 'fa-house', label: 'Home', action: () => scrollTo('home') },
-    { icon: 'fa-utensils', label: 'Menu', action: () => scrollTo('menu') },
-    { icon: 'fa-burger', label: 'Builder', action: () => scrollTo('builder') },
-    { icon: 'fa-receipt', label: 'Orders', action: () => scrollTo('orders') },
-    { icon: 'fa-cart-shopping', label: 'Cart', action: onCartClick, badge: cartCount },
+    { icon: 'fa-house', label: 'Home', action: () => navigate('/') },
+    { icon: 'fa-utensils', label: 'Menu', action: () => navigate('/menu') },
+    { icon: 'fa-burger', label: 'Builder', action: () => navigate('/builder') },
+    { icon: 'fa-receipt', label: 'Orders', action: () => navigate('/orders') },
   ];
 
   return (

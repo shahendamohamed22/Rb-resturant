@@ -1,8 +1,11 @@
 import { useSelector } from 'react-redux';
+import { useOutletContext } from 'react-router-dom';
 
 const STAGE_LABELS = ['Confirmed', 'Preparing', 'On the way', 'Delivered'];
 
-function OrdersSection({ onTrackOrder, onRateOrder }) {
+function OrdersSection() {
+    
+  const { onTrackOrder, onRateOrder } = useOutletContext();
     const orders = useSelector((state) => state.orders.items);
 
     return (
