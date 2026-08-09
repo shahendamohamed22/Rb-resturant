@@ -31,11 +31,15 @@ function CustomerApp() {
 
   return (
     <>
-      <Header onCartClick={() => setShowCart(true)} onAccountClick={() => {}} />
+      <div className='page '>
+        <Header onCartClick={() => setShowCart(true)} onAccountClick={() => { }} />
 
-      <Outlet context={{ onTrackOrder: setTrackingOrderId, onRateOrder: setReviewOrderId }} />
+        <main className="content">
+          <Outlet context={{ onTrackOrder: setTrackingOrderId, onRateOrder: setReviewOrderId }} />
+        </main>
+        <Footer />
 
-      <Footer />
+      </div>
 
       <CartDrawer
         show={showCart}
@@ -83,7 +87,7 @@ function App() {
 
   // Not logged in → show ONLY the auth screen, nothing else
   if (!token) {
-    return <AuthModal show={true} onClose={() => {}} forceOpen />;
+    return <AuthModal show={true} onClose={() => { }} forceOpen />;
   }
 
   // Logged in as driver → show driver interface

@@ -33,9 +33,22 @@
 p{
     margin: 0;
 }
-
+/* 
 section[id] {
   scroll-margin-top: 50px;
+} */
+/* section{
+  margin-bottom: 130px;
+} */
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
 }
 
 @media (max-width: 767px) {

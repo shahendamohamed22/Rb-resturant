@@ -57,7 +57,12 @@ function MenuSection() {
                 <div className="row">
                     {currentCategory.items.map((item) => (
                         <div key={item.id} className="col-md-4 mb-3">
-                            <div className="card h-100" style={{ borderRadius: 'var(--radius-card)' }}>
+                            <div className="card h-100 overflow-hidden" style={{ borderRadius: 'var(--radius-card)',  }}>
+                                <img
+                                    src={item.imageUrl || `https://picsum.photos/seed/${item.id}/400/300`}
+                                    alt={item.nameEn}
+                                    style={{ width: '100%', height: 160, objectFit: 'cover' }}
+                                />
                                 <div className="card-body d-flex flex-column">
                                     <h5>{item.nameEn}</h5>
                                     <p className="text-muted small">{item.descriptionEn}</p>

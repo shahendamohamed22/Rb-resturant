@@ -1,11 +1,13 @@
+import burger from "../../../attached_assets/cheese-Burger.jpg"
+import chicken from "../../../attached_assets/crispychickensandwich.webp"
 export const mockMenu = [
   {
     categoryKey: 'burgers',
     labelAr: 'البرجر',
     labelEn: 'Burgers',
     items: [
-      { id: 1, nameAr: 'أورجينال', nameEn: 'Original', descriptionAr: 'قطعة برجر محشية جبنة', descriptionEn: 'Cheese-stuffed beef patty', price: 90, imageUrl: null },
-      { id: 2, nameAr: 'ريبابلك', nameEn: 'Republic', descriptionAr: 'قطعة برجر محشية جبنة، صوص شيدر', descriptionEn: 'Cheese-stuffed beef patty, cheddar sauce', price: 95, imageUrl: null },
+      { id: 1, nameAr: 'أورجينال', nameEn: 'Original', descriptionAr: 'قطعة برجر محشية جبنة', descriptionEn: 'Cheese-stuffed beef patty', price: 90, imageUrl: burger },
+      { id: 2, nameAr: 'ريبابلك', nameEn: 'Republic', descriptionAr: 'قطعة برجر محشية جبنة، صوص شيدر', descriptionEn: 'Cheese-stuffed beef patty, cheddar sauce', price: 95, imageUrl: burger },
     ],
   },
   {
@@ -13,7 +15,7 @@ export const mockMenu = [
     labelAr: 'الفراخ',
     labelEn: 'Chicken',
     items: [
-      { id: 3, nameAr: 'تشاكي تشكن', nameEn: 'Chucky Chicken', descriptionAr: 'قطع كريسبي تتيلا', descriptionEn: 'Crispy tortilla chicken bites', price: 95, imageUrl: null },
+      { id: 3, nameAr: 'تشاكي تشكن', nameEn: 'Chucky Chicken', descriptionAr: 'قطع كريسبي تتيلا', descriptionEn: 'Crispy tortilla chicken bites', price: 95, imageUrl: chicken },
     ],
   },
 ];
@@ -25,15 +27,15 @@ export const mockBranches = [
 
 // fake registered customer, for testing login
 export const mockCustomer = {
-  phone: '01012345678',
-  password: 'P@ssw0rd',
+  phone: '12345',
+  password: '12345',
   customerId: 'mock-customer-1',
   fullName: 'Ahmed Sami',
 };
 
 export const mockDriver = {
-  phone: '01099988877',
-  password: 'P@ssw0rd',
+  phone: '123456',
+  password: '123456',
   driverId: 'mock-driver-1',
   fullName: 'Karim Adel',
 };

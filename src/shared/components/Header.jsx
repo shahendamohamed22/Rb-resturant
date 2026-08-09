@@ -33,7 +33,7 @@ function Header({ onCartClick, onAccountClick }) {
 
   return (
     <header style={{ background: 'var(--maroon-950)', color: 'var(--cream-50)', position: 'sticky', top: 0, zIndex: 60 }}>
-      <div className="container d-flex align-items-center justify-content-between py-2">
+      <div className="container-lg d-flex align-items-center justify-content-between py-2">
 
         {/* Logo — always visible */}
         <Link to="/" className="d-flex align-items-center gap-2 text-decoration-none">
@@ -101,7 +101,9 @@ function Header({ onCartClick, onAccountClick }) {
             style={{ border: '1.5px solid rgba(255,255,255,.25)', color: 'var(--gold-300)', borderRadius: 999, fontWeight: 800 }}
             onClick={onAccountClick}
           >
-            <i className="fa-solid fa-user"></i> {fullName ? fullName.split(' ')[0] : 'Login'}
+            <i className="fa-solid fa-user"></i>
+             <span className='d-md-inline-block d-none'>{fullName ? fullName.split(' ')[0] : 'Login'}</span>
+             <span className='d-inline-block d-md-none'>{fullName ? fullName.split(' ')[0][0] : 'Login'}</span>
           </button>
         </div>
       </div>
