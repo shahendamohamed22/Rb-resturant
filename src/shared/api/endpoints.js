@@ -23,3 +23,15 @@ export const ENDPOINTS = {
   // §7.7 Payments
   paymentCharge: (orderId) => `/payments/${orderId}/charge`,
 };
+
+export const DRIVER_ENDPOINTS = {
+  // §7.2 Auth — Driver (login only, no signup — see §1.3)
+  driverLogin: '/auth/driver/login',
+
+  // §7.5 Orders — Driver
+  newOrders: '/driver/orders/new',
+  myOrders: (status) => `/driver/orders/mine?status=${status}`, // status: 'active' | 'completed'
+  receive: (orderId) => `/driver/orders/${orderId}/receive`,
+  ship: (orderId) => `/driver/orders/${orderId}/ship`,
+  deliver: (orderId) => `/driver/orders/${orderId}/deliver`,
+};

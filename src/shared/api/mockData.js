@@ -26,16 +26,18 @@ export const mockBranches = [
 ];
 
 // fake registered customer, for testing login
+// fake registered customer, for testing login
 export const mockCustomer = {
   phone: '12345',
   password: '12345',
   customerId: 'mock-customer-1',
   fullName: 'Ahmed Sami',
+  address: 'Sohag, University street',
 };
 
 export const mockDriver = {
-  phone: '123456',
-  password: '123456',
+  phone: '12345',
+  password: '12345',
   driverId: 'mock-driver-1',
   fullName: 'Karim Adel',
 };

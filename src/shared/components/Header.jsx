@@ -7,10 +7,6 @@ import { useTranslation } from 'react-i18next';
 import { toggleLanguage } from '../../features/languages/languageSlice';
 import { Link } from 'react-router-dom';
 
-function scrollTo(id) {
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-}
-
 function Header({ onCartClick, onAccountClick }) {
   const { t } = useTranslation();
   const currentLang = useSelector((state) => state.language.current);
@@ -33,7 +29,7 @@ function Header({ onCartClick, onAccountClick }) {
 
   return (
     <header style={{ background: 'var(--maroon-950)', color: 'var(--cream-50)', position: 'sticky', top: 0, zIndex: 60 }}>
-      <div className="container-lg d-flex align-items-center justify-content-between py-2">
+      <div className="container-lg d-flex align-items-center justify-content-between py-3">
 
         {/* Logo — always visible */}
         <Link to="/" className="d-flex align-items-center gap-2 text-decoration-none">
@@ -43,15 +39,16 @@ function Header({ onCartClick, onAccountClick }) {
           >
             R
           </div>
-          <span className='d-none d-md-block' style={{ fontFamily: 'var(--font-display)', fontSize: 26, color: 'var(--gold-400)' }}>
+          <span className='d-none d-lg-block' style={{ fontFamily: 'var(--font-display)', fontSize: 26, color: 'var(--gold-400)' }}>
             R Burger
           </span>
         </Link>
 
         {/* Desktop nav links — hidden on mobile (d-none), shown from md breakpoint up */}
         <nav className="d-none d-md-flex align-items-center gap-4">
+          <Link to="/" style={{ color: 'var(--cream-50)', fontWeight: 700, textDecoration: 'none' }}>Home</Link>
           <Link to="/menu" style={{ color: 'var(--cream-50)', fontWeight: 700, textDecoration: 'none' }}>Menu</Link>
-          <Link to="/builder" style={{ color: 'var(--cream-50)', fontWeight: 700, textDecoration: 'none' }}>Builder</Link>
+          <Link to="/builder" style={{ color: 'var(--cream-50)', fontWeight: 700, textDecoration: 'none' }}>Build</Link>
           <Link to="/orders" style={{ color: 'var(--cream-50)', fontWeight: 700, textDecoration: 'none' }}>Orders</Link>
           <Link to="/branches" style={{ color: 'var(--cream-50)', fontWeight: 700, textDecoration: 'none' }}>Branches</Link>
         </nav>
@@ -60,7 +57,7 @@ function Header({ onCartClick, onAccountClick }) {
         <div className="d-flex align-items-center gap-2">
           {branches && (
             <select
-              className="form-select form-select-sm"
+              className="branch-select form-select form-select-sm"
               style={{ width: 85, borderRadius: 999 }}
               value={selectedBranch?.id || ''}
               onChange={handleBranchChange}
@@ -75,12 +72,13 @@ function Header({ onCartClick, onAccountClick }) {
             style={{ border: '1.5px solid rgba(255,255,255,.25)', color: 'var(--gold-300)', borderRadius: 999, fontWeight: 700 }}
             onClick={() => dispatch(toggleLanguage())}
           >
-            {currentLang === 'ar' ? 'English' : 'العربي'}
+            {/* {currentLang === 'ar' ? 'English' : 'العربي'} */}
+            <i className='fa-solid fa-earth fs-3'></i>
           </button>
 
           {/* Cart button — hidden on mobile, shown in bottom nav instead */}
           <button
-            className="btn btn-sm position-relative "
+            className="btn btn-sm position-relative fs-6"
             style={{ background: 'var(--gold-500)', color: 'var(--maroon-950)', borderRadius: 999, fontWeight: 800 }}
             onClick={onCartClick}
           >
@@ -97,13 +95,12 @@ function Header({ onCartClick, onAccountClick }) {
           </button>
 
           <button
-            className="btn btn-sm"
+            className="btn btn-sm fs-6"
             style={{ border: '1.5px solid rgba(255,255,255,.25)', color: 'var(--gold-300)', borderRadius: 999, fontWeight: 800 }}
             onClick={onAccountClick}
           >
             <i className="fa-solid fa-user"></i>
              <span className='d-md-inline-block d-none'>{fullName ? fullName.split(' ')[0] : 'Login'}</span>
-             <span className='d-inline-block d-md-none'>{fullName ? fullName.split(' ')[0][0] : 'Login'}</span>
           </button>
         </div>
       </div>

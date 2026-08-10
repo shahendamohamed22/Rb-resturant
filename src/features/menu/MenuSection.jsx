@@ -56,7 +56,7 @@ function MenuSection() {
             {currentCategory && (
                 <div className="row">
                     {currentCategory.items.map((item) => (
-                        <div key={item.id} className="col-md-4 mb-3">
+                        <div key={item.id} className="col-12 col-sm-6 col-md-4 mb-3">
                             <div className="card h-100 overflow-hidden" style={{ borderRadius: 'var(--radius-card)',  }}>
                                 <img
                                     src={item.imageUrl || `https://picsum.photos/seed/${item.id}/400/300`}
@@ -84,6 +84,7 @@ function MenuSection() {
             )}
         </section>
     );
+
 }
 
 export default MenuSection;

@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import api from '../../shared/api/axiosClient';
-import { ENDPOINTS } from '../../shared/api/endpoints';
+import { DRIVER_ENDPOINTS, ENDPOINTS } from '../../shared/api/endpoints';
 import { setCredentials } from './authSlice';
 
-function AuthModal({ show, onClose }) {
+function AuthModal({ show, onClose, onSuccess }) {
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState('login'); // 'login' | 'signup'
+  const [userType, setUserType] = useState('customer');
 
   // shared fields
   const [phone, setPhone] = useState('');
@@ -34,7 +35,12 @@ function AuthModal({ show, onClose }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post(ENDPOINTS.customerLogin, { phone, password });
+      const endpoint =
+        userType === 'customer'
+          ? ENDPOINTS.customerLogin
+          : DRIVER_ENDPOINTS.driverLogin;
+
+      const response = await api.post(endpoint, { phone, password });
       dispatch(setCredentials({
         token: response.data.accessToken,
         customerId: response.data.customerId,
@@ -42,8 +48,9 @@ function AuthModal({ show, onClose }) {
         role: response.data.role,
       }));
       resetAndClose();
+      onSuccess?.();
     } catch (err) {
-      console.error('LOGIN ERROR:', err); 
+      console.error('LOGIN ERROR:', err);
       setErrorMsg('Login failed. Check your phone/password.');
     }
   };
@@ -79,6 +86,7 @@ function AuthModal({ show, onClose }) {
         role: response.data.role
       }));
       resetAndClose();
+      onSuccess?.();
     } catch (err) {
       if (err.response?.status === 409) {
         setErrorMsg('This number is already registered — try logging in instead.');
@@ -104,6 +112,18 @@ function AuthModal({ show, onClose }) {
           <button className="btn-close" onClick={resetAndClose}></button>
         </div>
 
+        {/* <h3 className='fs-5'>Are you&nbsp;
+          <label className="type-option" htmlFor="customer">
+            <input type="radio" hidden name='type' id='customer' value={"customer"}
+              checked={userType === 'customer'} onChange={(e) => setUserType(e.target.value)} />
+            Customer</label>
+          &nbsp;or&nbsp;
+          <label className="type-option" htmlFor="driver">
+            <input type="radio" hidden name='type' id='driver' value={"driver"}
+              checked={userType === 'driver'} onChange={(e) => setUserType(e.target.value)} />
+            Driver</label>&nbsp;?
+        </h3> */}
+
         {/* ===== Tabs ===== */}
         <div className="d-flex mb-3" style={{ borderBottom: '1px solid var(--line)' }}>
           <button
@@ -121,7 +141,7 @@ function AuthModal({ show, onClose }) {
           </button>
           <button
             type="button"
-            className="btn flex-fill"
+            className={userType === 'driver' ? 'd-none' : 'btn flex-fill'}
             style={{
               borderRadius: 0,
               borderBottom: activeTab === 'signup' ? '3px solid var(--maroon-800)' : '3px solid transparent',
@@ -185,6 +205,21 @@ function AuthModal({ show, onClose }) {
             </button>
           </form>
         )}
+        <p
+          className="fw-bold text-center mt-2 mb-0"
+          style={{
+            fontSize: '.7rem',
+            color: 'var(--maroon-800)',
+            
+          }}
+          onClick={() => {
+            setUserType(userType === 'customer' ? 'driver' : 'customer');
+            setActiveTab('login');
+            setErrorMsg('');
+          }}
+        >
+          Login as a <span style={{color:"var(--gold-500)", cursor: 'pointer', }} >{userType === 'customer' ? 'driver' : 'customer'} </span>
+        </p>
       </div>
     </div>
   );

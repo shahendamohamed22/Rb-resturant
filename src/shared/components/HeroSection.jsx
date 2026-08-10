@@ -1,9 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import burgerImg from "../../../attached_assets/burger-hero.png";
 import MenuSection from '../../features/menu/MenuSection';
+import { useTranslation } from 'react-i18next';
 
 function HeroSection() {
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     return (
         <>
@@ -18,7 +20,7 @@ function HeroSection() {
                     <div className='row align-items-center'>
 
                         <div className='col-md-7'>
-                            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 60 }}>
+                            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: "var(--hero-title-size)" }}>
                                 A burger bite <span style={{ color: 'var(--gold-400)' }}>your way,</span>
                                 <br />
                                 delivered while you track it

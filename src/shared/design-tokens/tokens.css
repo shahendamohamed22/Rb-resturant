@@ -1,38 +1,42 @@
 :root {
-    /* Colors — from §2.1 */
-    --maroon-950: #3E0B15;
-    --maroon-800: #5C1220;
-    --maroon-700: #7A1B2B;
+  /* Colors — from §2.1 */
+  --maroon-950: #3E0B15;
+  --maroon-800: #5C1220;
+  --maroon-700: #7A1B2B;
 
-    --gold-500: #F2A93B;
-    --gold-400: #F7BE5F;
-    --gold-300: #FBD383;
-    --gold-200: #FFE3B0;
+  --gold-500: #F2A93B;
+  --gold-400: #F7BE5F;
+  --gold-300: #FBD383;
+  --gold-200: #FFE3B0;
 
-    --cream-50: #FFF8ED;
+  --cream-50: #FFF8ED;
 
-    --ink-900: #2A1509;
-    --ink-600: #6B4A34;
+  --ink-900: #2A1509;
+  --ink-600: #6B4A34;
 
-    --green-600: #3F8F5F;
-    --blue-600: #2F6FB2;
+  --green-600: #3F8F5F;
+  --blue-600: #2F6FB2;
 
-    --line: #EADFC9;
+  --line: #EADFC9;
 
-    /* Spacing, radius, elevation — from §2.3 */
-    --radius-card: 18px;
-    --radius-pill: 999px;
-    --space-section: 80px;
-    --space-card-gap: 15px;
-    --shadow-card: 0 10px 30px -12px rgba(62, 11, 21, 0.35);
+  /* Spacing, radius, elevation — from §2.3 */
+  --radius-card: 18px;
+  --radius-pill: 999px;
+  --space-section: 80px;
+  --space-card-gap: 15px;
+  --shadow-card: 0 10px 30px -12px rgba(62, 11, 21, 0.35);
 
-    --font-display: 'Lalezar', sans-serif;
-    --font-body: 'Cairo', sans-serif;
+  --font-display: 'Lalezar', sans-serif;
+  --font-body: 'Cairo', sans-serif;
+
+  --hero-title-size: 4rem;
+
 }
 
-p{
-    margin: 0;
+p {
+  margin: 0;
 }
+
 /* 
 section[id] {
   scroll-margin-top: 50px;
@@ -51,8 +55,46 @@ section[id] {
   flex: 1;
 }
 
+.type-option {
+  cursor: pointer;
+  padding-bottom: 2px;
+  border-bottom: 2px solid transparent
+}
+
+.type-option:has(input:checked) {
+  color: var(--gold-500);
+  border-bottom-color: var(--gold-300);
+}
+
+.branch-select {
+  background-color: var(--maroon-950) !important;
+  color: var(--gold-200) !important;
+  border: .5px solid #6E4850 !important;
+  padding: 7px !important;
+}
+
+@media (max-width: 992px) {
+  :root {
+    --hero-title-size: 3.2rem;
+  }
+}
+
 @media (max-width: 767px) {
   body {
     padding-bottom: 64px;
+  }
+
+  .fa-cart-shopping {
+    font-size: large;
+  }
+
+  :root {
+    --hero-title-size: 3rem;
+  }
+}
+
+@media (max-width: 576px) {
+  :root {
+    --hero-title-size: 2.7rem;
   }
 }

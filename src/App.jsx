@@ -7,13 +7,9 @@ import Footer from './shared/components/Footer';
 import BottomNav from './shared/components/BottomNav';
 import CartDrawer from './features/cart/CartDrawer';
 import AuthModal from './features/auth/AuthModal';
-import HeroSection from './shared/components/HeroSection';
-import MenuSection from './features/menu/MenuSection';
-import BuilderSection from './features/builder/BuilderSection';
-import BranchesSection from './features/branches/BranchesSection';
+import ProfileModal from './features/auth/ProfileModal';
 import CheckoutModal from './features/checkout/CheckoutModal';
 import OrderConfirmationModal from './features/orders/OrderConfirmationModal';
-import OrdersSection from './features/orders/OrdersSection';
 import TrackingModal from './features/orders/TrackingModal';
 import ReviewModal from './features/orders/ReviewModal';
 import { simulateOrderProgress } from './features/orders/simulateOrderProgress';
@@ -22,29 +18,72 @@ import DriverApp from './features/driver/DriverApp';
 
 function CustomerApp() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const token = useSelector((state) => state.auth.token);
 
   const [showCart, setShowCart] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
   const [confirmedOrder, setConfirmedOrder] = useState(null);
   const [trackingOrderId, setTrackingOrderId] = useState(null);
   const [reviewOrderId, setReviewOrderId] = useState(null);
+  const [authIntent, setAuthIntent] = useState(null);
+  // account button: logged in → profile, not logged in → login
+  const handleAccountClick = () => {
+    if (token) {
+      setShowProfile(true);
+    } else {
+      setAuthIntent(null);
+      setShowAuth(true);
+    }
+  };
+
+  // cart's checkout button: logged in → go straight to checkout, else → ask to login first
+  const handleCheckoutRequest = () => {
+    setShowCart(false);
+    if (token) {
+      setShowCheckout(true);
+    } else {
+      setAuthIntent('checkout');
+      setShowAuth(true);
+    }
+  };
+
+  // called after a successful login/signup from AuthModal
+  const handleAuthSuccess = () => {
+    if (authIntent === 'checkout') {
+      setShowCheckout(true);
+    }
+    setAuthIntent(null);
+  };
 
   return (
     <>
-      <div className='page '>
-        <Header onCartClick={() => setShowCart(true)} onAccountClick={() => { }} />
-
-        <main className="content">
+      <div className='page'>
+        <Header onCartClick={() => setShowCart(true)} onAccountClick={handleAccountClick} />
+        <main className='content'>
           <Outlet context={{ onTrackOrder: setTrackingOrderId, onRateOrder: setReviewOrderId }} />
         </main>
-        <Footer />
 
+        <Footer />
       </div>
 
       <CartDrawer
         show={showCart}
         onClose={() => setShowCart(false)}
-        onCheckout={() => { setShowCart(false); setShowCheckout(true); }}
+        onCheckout={handleCheckoutRequest}
+      />
+
+      <AuthModal
+        show={showAuth}
+        onClose={() => setShowAuth(false)}
+        onSuccess={handleAuthSuccess}
+      />
+
+      <ProfileModal
+        show={showProfile}
+        onClose={() => setShowProfile(false)}
       />
 
       <CheckoutModal
@@ -54,6 +93,7 @@ function CustomerApp() {
           dispatch(addOrder(order));
           setConfirmedOrder(order);
           simulateOrderProgress(order.orderId);
+          navigate('/orders');
         }}
       />
 
@@ -82,20 +122,14 @@ function CustomerApp() {
 }
 
 function App() {
-  const token = useSelector((state) => state.auth.token);
   const role = useSelector((state) => state.auth.role);
 
-  // Not logged in → show ONLY the auth screen, nothing else
-  if (!token) {
-    return <AuthModal show={true} onClose={() => { }} forceOpen />;
-  }
-
-  // Logged in as driver → show driver interface
+  // Driver is still gated — logging in as driver shows only the driver interface
   if (role === 'driver') {
     return <DriverApp />;
   }
 
-  // Logged in as customer → show the full customer site
+  // Everyone else (including guests) sees the full browsable customer site
   return <CustomerApp />;
 }
 

@@ -11,6 +11,8 @@ import './shared/design-tokens/tokens.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
+import './app/i18n.js';
+
 if (import.meta.env.VITE_USE_MOCKS === 'true') {
   await import('./shared/api/mockAdapter.js');
 }
@@ -18,8 +20,9 @@ if (import.meta.env.VITE_USE_MOCKS === 'true') {
 const queryClient = new QueryClient();
 
 import './app/i18n.js';
-document.documentElement.lang = 'ar';
-document.documentElement.dir = 'rtl';
+
+document.documentElement.lang = 'en';
+document.documentElement.dir = 'ltr';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
