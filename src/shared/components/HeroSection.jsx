@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import burgerImg from "../../../attached_assets/burger-hero.png";
-import MenuSection from '../../features/menu/MenuSection';
+import HomeMenu from '../../features/menu/HomeMenu';
 import { useTranslation } from 'react-i18next';
 
 function HeroSection() {
@@ -53,7 +53,7 @@ function HeroSection() {
                 </div>
             </section>
 
-            <MenuSection />
+            <HomeMenu />
         </>
     );
 }

@@ -15,6 +15,7 @@ import ReviewModal from './features/orders/ReviewModal';
 import { simulateOrderProgress } from './features/orders/simulateOrderProgress';
 import { addOrder } from './features/orders/ordersSlice';
 import DriverApp from './features/driver/DriverApp';
+import HomeMenu from './features/menu/HomeMenu';
 
 function CustomerApp() {
   const dispatch = useDispatch();

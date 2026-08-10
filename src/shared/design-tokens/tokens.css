@@ -1,3 +1,6 @@
+*{
+ box-sizing: border-box; 
+}
 :root {
   /* Colors — from §2.1 */
   --maroon-950: #3E0B15;
@@ -72,6 +75,81 @@ section[id] {
   border: .5px solid #6E4850 !important;
   padding: 7px !important;
 }
+
+.menu-category-title {
+  color: var(--maroon-800);
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  padding-bottom: .7rem;
+  border-bottom: 3px solid var(--maroon-800);
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px dashed rgba(80, 20, 20, .25);
+}
+
+.menu-item img {
+  position: relative;
+  width: 85px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.menu-item-img::before{
+   content: '';
+    position: absolute;
+    width: 90px;
+    height: 70px;
+    background: var(--gold-500);
+    border-radius: 10px;
+    top: -10px;
+    left: -10px;
+    transform: rotate(-5deg);
+    filter: blur(1px);
+}
+
+.menu-item-info {
+  flex: 1;
+}
+
+.menu-item-info h5 {
+  margin: 0;
+  color: var(--maroon-800);
+  font-weight: 800;
+}
+
+.menu-item-info span {
+  color: var(--maroon-800);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.menu-item-info p {
+  margin: .25rem 0 0;
+  color: #777;
+  font-size: .8rem;
+}
+
+.menu-add {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--maroon-800);
+  color: #fff;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
 
 @media (max-width: 992px) {
   :root {

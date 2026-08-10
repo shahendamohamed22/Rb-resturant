@@ -9,11 +9,11 @@ function BottomNav({ onCartClick }) {
   const { t } = useTranslation();
   
   const items = [
-    { icon: 'fa-house', label: t("nav_home"), action: () => navigate('/') },
-    { icon: 'fa-utensils', label: t("nav_menu"), action: () => navigate('/menu') },
-    { icon: 'fa-burger', label: t("nav_builder"), action: () => navigate('/builder') },
-    { icon: 'fa-receipt', label: t("nav_orders"), action: () => navigate('/orders') },
-    { icon: 'fa-shop', label: t("nav_branches"), action: () => navigate('/branches') },
+    { icon: 'fa-house', label: "Home", action: () => navigate('/') },
+    { icon: 'fa-utensils', label: "Menu", action: () => navigate('/menu') },
+    { icon: 'fa-burger', label: "Builder", action: () => navigate('/builder') },
+    { icon: 'fa-receipt', label: "Orders", action: () => navigate('/orders') },
+    { icon: 'fa-shop', label: "Branches", action: () => navigate('/branches') },
   ];
 
   return (
