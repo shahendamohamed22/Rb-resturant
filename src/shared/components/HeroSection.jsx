@@ -47,7 +47,7 @@ function HeroSection() {
                             </div>
                         </div>
                         <div className='col-md-5'>
-                            <img src={burgerImg} alt="Burger" style={{ maxWidth: '100%' }} />
+                            <img src={burgerImg} alt="Burger" style={{ maxWidth: '100%' }} className='burgerImg' />
                         </div>
                     </div>
                 </div>

@@ -37,7 +37,7 @@ function MenuSection() {
         : currentCategory?.items || [];
 
     return (
-        <section id="menu" className="container py-5">
+        <section id="menu" className="container py-5" >
             <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
                 <div>
                     <h2 style={{ fontFamily: 'var(--font-display)', color: 'var(--maroon-800)' }}>Menu</h2>

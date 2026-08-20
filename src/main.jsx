@@ -7,7 +7,7 @@ import { RouterProvider } from 'react-router-dom';
 import { store } from './app/store.js';
 import { router } from './app/router.jsx';
 
-import './shared/design-tokens/tokens.css';
+import './shared/design-tokens/token.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 

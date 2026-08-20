@@ -36,6 +36,13 @@
 
 }
 
+html{
+  background-color: var(--cream-50);
+}
+body{
+  background-color: var(--cream-50);
+}
+
 p {
   margin: 0;
 }
@@ -148,6 +155,24 @@ section[id] {
   color: #fff;
   font-size: 1.2rem;
   flex-shrink: 0;
+}
+
+.burgerImg{
+  animation: floating 3s linear infinite ;
+}
+
+@keyframes floating {
+  0% {
+    transform: translateY(-15px);
+  }
+
+  50% {
+    transform: translateY(15px);
+  }
+
+  100% {
+    transform: translateY(-15px);
+  }
 }
 
 

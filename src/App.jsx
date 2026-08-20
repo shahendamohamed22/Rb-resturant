@@ -63,7 +63,7 @@ function CustomerApp() {
     <>
       <div className='page'>
         <Header onCartClick={() => setShowCart(true)} onAccountClick={handleAccountClick} />
-        <main className='content'>
+        <main className='content' style={{backgroundColor:'var(--cream-50)'}}>
           <Outlet context={{ onTrackOrder: setTrackingOrderId, onRateOrder: setReviewOrderId }} />
         </main>
 
