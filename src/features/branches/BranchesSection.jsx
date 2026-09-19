@@ -28,6 +28,7 @@ function BranchesSection() {
                             <div className='mt-4'>
                                 <p className='text-muted'>Delivery and pickup</p>
                                 <p className="text-muted">hotLine: {branch.hotLine}</p>
+                                <p className="text-muted">delivery fee: {branch.deliveryFee} pounds</p>
                                 <p className="text-muted">Average delivery: {branch.etaMinMinutes}–{branch.etaMaxMinutes} min </p>
                             </div>
                         </div>

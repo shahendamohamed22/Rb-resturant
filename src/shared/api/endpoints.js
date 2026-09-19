@@ -1,37 +1,34 @@
-// Centralized route constants for the Customer Web App only.
-// Matches §7.1, §7.3, §7.4, §7.7 of the documentation.
 
 export const ENDPOINTS = {
-  // §7.1 Auth — Customer
+  // Auth
   customerSignup: '/auth/customer/signup',
   customerLogin: '/auth/customer/login',
+  driverLogin: '/auth/driver/login',
   refreshToken: '/auth/refresh',
+  logout: '/auth/logout',
+
+  // Customer profile
   customerMe: '/customers/me',
 
-  // §7.3 Menu & Branches (public, read-only)
+  // Public data
   branches: '/branches',
   menu: (branchId) => `/menu?branchId=${branchId}`,
   builderOptions: '/builder/options',
 
-  // §7.4 Orders — Customer
+  // Orders — Customer
   orders: '/orders',
-  myOrders: '/orders/mine',
+  myOrders: (page = 1, pageSize = 20) => `/orders/mine?page=${page}&pageSize=${pageSize}`,
   orderById: (orderId) => `/orders/${orderId}`,
   customerReceived: (orderId) => `/orders/${orderId}/customer-received`,
   submitReview: (orderId) => `/orders/${orderId}/review`,
 
-  // §7.7 Payments
+  // Orders — Driver
+  driverNewOrders: '/driver/orders/new',
+  driverMyOrders: (status) => `/driver/orders/mine?status=${status}`,
+  driverReceive: (orderId) => `/driver/orders/${orderId}/receive`,
+  driverShip: (orderId) => `/driver/orders/${orderId}/ship`,
+  driverDeliver: (orderId) => `/driver/orders/${orderId}/deliver`,
+
+  // Payments
   paymentCharge: (orderId) => `/payments/${orderId}/charge`,
-};
-
-export const DRIVER_ENDPOINTS = {
-  // §7.2 Auth — Driver (login only, no signup — see §1.3)
-  driverLogin: '/auth/driver/login',
-
-  // §7.5 Orders — Driver
-  newOrders: '/driver/orders/new',
-  myOrders: (status) => `/driver/orders/mine?status=${status}`, // status: 'active' | 'completed'
-  receive: (orderId) => `/driver/orders/${orderId}/receive`,
-  ship: (orderId) => `/driver/orders/${orderId}/ship`,
-  deliver: (orderId) => `/driver/orders/${orderId}/deliver`,
 };

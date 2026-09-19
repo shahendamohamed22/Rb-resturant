@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { selectCartCount } from '../../features/cart/cartSlice';
 import { useTranslation } from 'react-i18next';
 
@@ -7,13 +7,13 @@ function BottomNav({ onCartClick }) {
   const navigate = useNavigate();
   const cartCount = useSelector(selectCartCount);
   const { t } = useTranslation();
-  
+
   const items = [
-    { icon: 'fa-house', label: "Home", action: () => navigate('/') },
-    { icon: 'fa-utensils', label: "Menu", action: () => navigate('/menu') },
-    { icon: 'fa-burger', label: "Builder", action: () => navigate('/builder') },
-    { icon: 'fa-receipt', label: "Orders", action: () => navigate('/orders') },
-    { icon: 'fa-shop', label: "Branches", action: () => navigate('/branches') },
+    { icon: 'fa-house', label: "Home", path: '/' },
+    { icon: 'fa-utensils', label: "Menu", path: '/menu' },
+    { icon: 'fa-burger', label: "Builder", path: '/builder' },
+    { icon: 'fa-receipt', label: "Orders", path: '/orders' },
+    { icon: 'fa-shop', label: "Branches", path: '/branches' },
   ];
 
   return (
@@ -31,11 +31,11 @@ function BottomNav({ onCartClick }) {
       }}
     >
       {items.map((item) => (
-        <button
+        <NavLink
           key={item.label}
-          onClick={item.action}
+          to={item.path}
           className="btn d-flex flex-column align-items-center justify-content-center position-relative"
-          style={{ color: 'var(--gold-300)', background: 'none', border: 'none', fontSize: 11 }}
+          style={({isActive})=>( { color: isActive ?  "var(--gold-300)" : "var(--cream-50)" , background: 'none', border: 'none', fontSize: 11 })}
         >
           <i className={`fa-solid ${item.icon}`} style={{ fontSize: 18 }}></i>
           <span>{item.label}</span>
@@ -47,7 +47,7 @@ function BottomNav({ onCartClick }) {
               {item.badge}
             </span>
           )}
-        </button>
+        </NavLink>
       ))}
     </nav>
   );

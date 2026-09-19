@@ -2,9 +2,12 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useMenuQuery } from './useMenuQuery';
 import { addItem } from '../cart/cartSlice';
+import { useSelector } from 'react-redux';
+import placeHolderImg from "../../../attached_assets/placeholder.jpg"
 
 function MenuSection() {
-    const { data: menu, isLoading, error } = useMenuQuery(1);
+    const selectedBranch = useSelector((state) => state.branch.selectedBranch);
+    const { data: menu = [], isLoading, error } = useMenuQuery(selectedBranch?.id);
     const dispatch = useDispatch();
     const [activeCategory, setActiveCategory] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
@@ -22,6 +25,7 @@ function MenuSection() {
 
     if (isLoading) return <section id="menu" className="container py-5"><p>Loading...</p></section>;
     if (error) return <section id="menu" className="container py-5"><p>Something went wrong.</p></section>;
+    if (!selectedBranch) return <section id="menu" className="container py-5"><p>Loading...</p></section>;
 
     // default to the first category once data arrives
     const currentKey = activeCategory ?? menu[0]?.categoryKey;
@@ -92,7 +96,7 @@ function MenuSection() {
                         <div key={item.id} className="col-6 col-md-4 col-lg-3 mb-3">
                             <div className="card h-100 overflow-hidden" style={{ borderRadius: 'var(--radius-card)', }}>
                                 <img
-                                    src={item.imageUrl || `https://picsum.photos/seed/${item.id}/400/300`}
+                                    src={item.imageUrl || placeHolderImg }
                                     alt={item.nameEn}
                                     style={{ width: '100%', height: 160, objectFit: 'cover' }}
                                 />

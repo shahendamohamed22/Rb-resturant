@@ -1,19 +1,21 @@
-import { useMutation } from '@tanstack/react-query';
-import { useDispatch } from 'react-redux';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../../shared/api/axiosClient';
 import { ENDPOINTS } from '../../shared/api/endpoints';
-import { setOrderReview } from './ordersSlice';
 
 export function useSubmitReviewMutation() {
-  const dispatch = useDispatch();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({ orderId, rating, comment }) => {
-      const response = await api.post(ENDPOINTS.submitReview(orderId), { rating, comment });
+      const response = await api.post(ENDPOINTS.submitReview(orderId), {
+        rating,
+        comment,
+        orderId,
+      });
       return { orderId, ...response.data };
     },
-    onSuccess: (data) => {
-      dispatch(setOrderReview({ orderId: data.orderId, rating: data.rating, comment: data.comment }));
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['myOrders'] });
     },
   });
 }

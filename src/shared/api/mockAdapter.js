@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import api from './axiosClient';
-import { ENDPOINTS, DRIVER_ENDPOINTS } from './endpoints';
+import { ENDPOINTS } from './endpoints';
 import { mockMenu, mockBranches, mockCustomer, mockDriver, mockBuilderOptions } from './mockData';
 
 const mock = new MockAdapter(api, { delayResponse: 400 });
@@ -30,22 +30,22 @@ mock.onPost(ENDPOINTS.customerLogin).reply((config) => {
 });
 
 // Driver login — driver accounts only, separate endpoint per §7.2
-mock.onPost(DRIVER_ENDPOINTS.driverLogin).reply((config) => {
-  const { phone, password } = JSON.parse(config.data);
+// mock.onPost(DRIVER_ENDPOINTS.driverLogin).reply((config) => {
+//   const { phone, password } = JSON.parse(config.data);
 
-  if (phone === mockDriver.phone && password === mockDriver.password) {
-    return [200, {
-      customerId: mockDriver.driverId,
-      fullName: mockDriver.fullName,
-      role: 'driver',
-      accessToken: 'mock-token-driver',
-      refreshToken: 'mock-refresh-driver',
-      expiresInSeconds: 3600,
-    }];
-  }
+//   if (phone === mockDriver.phone && password === mockDriver.password) {
+//     return [200, {
+//       customerId: mockDriver.driverId,
+//       fullName: mockDriver.fullName,
+//       role: 'driver',
+//       accessToken: 'mock-token-driver',
+//       refreshToken: 'mock-refresh-driver',
+//       expiresInSeconds: 3600,
+//     }];
+//   }
 
-  return [401, { title: 'Invalid credentials', errorCode: 'INVALID_CREDENTIALS' }];
-});
+//   return [401, { title: 'Invalid credentials', errorCode: 'INVALID_CREDENTIALS' }];
+// });
 
 // Signup دايمًا بيسجل عميل بس — مطابق للدوكيومنتيشن، مفيش سجل درايفر ذاتي
 // متغير بيحفظ بيانات آخر عميل سجل (محاكاة لقاعدة بيانات بسيطة)

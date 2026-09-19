@@ -10,5 +10,6 @@ export function useMenuQuery(branchId) {
       const response = await api.get(ENDPOINTS.menu(branchId));
       return response.data;
     },
+    enabled: !!branchId,
   });
 }

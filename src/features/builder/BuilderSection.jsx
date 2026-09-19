@@ -5,25 +5,18 @@ import { addItem } from '../cart/cartSlice';
 
 function BuilderSection() {
     const { data: groups, isLoading, error } = useBuilderOptionsQuery();
+    console.log('BUILDER OPTIONS DATA:', groups);
     const dispatch = useDispatch();
 
-    const [selections, setSelections] = useState({
-        bun: null,
-        patty: null,
-        cheese: null,
-        sauce: null,
-        toppings: [],
-    });
+    const [selections, setSelections] = useState({});
 
     useEffect(() => {
         if (!groups) return;
         const defaults = {};
         groups.forEach((group) => {
-            if (group.isSingleSelect) {
-                defaults[group.groupKey] = group.options[0]?.id ?? null;
-            }
+            defaults[group.groupKey] = group.options[0]?.id ?? null;
         });
-        setSelections((prev) => ({ ...prev, ...defaults }));
+        setSelections(defaults);
     }, [groups]);
 
     if (isLoading) return <section id="builder" className="container py-5"><p>Loading...</p></section>;
@@ -36,59 +29,58 @@ function BuilderSection() {
         setSelections((prev) => ({ ...prev, [groupKey]: optionId }));
     };
 
-    const toggleTopping = (optionId) => {
+    const toggleMulti = (groupKey, optionId) => {
         setSelections((prev) => {
-            const has = prev.toppings.includes(optionId);
+            const current = prev[groupKey] || [];
+            const has = current.includes(optionId);
             return {
                 ...prev,
-                toppings: has
-                    ? prev.toppings.filter((id) => id !== optionId)
-                    : [...prev.toppings, optionId],
+                [groupKey]: has ? current.filter((id) => id !== optionId) : [...current, optionId],
             };
         });
     };
 
     const computePrice = () => {
         let total = 0;
-        ['bun', 'patty', 'cheese', 'sauce'].forEach((key) => {
-            const opt = getOption(key, selections[key]);
-            if (opt) total += opt.extraPrice;
-        });
-        selections.toppings.forEach((id) => {
-            const opt = getOption('toppings', id);
-            if (opt) total += opt.extraPrice;
+        groups.forEach((group) => {
+            if (group.isSingleSelect) {
+                const opt = getOption(group.groupKey, selections[group.groupKey]);
+                if (opt) total += opt.extraPrice;
+            } else {
+                (selections[group.groupKey] || []).forEach((id) => {
+                    const opt = getOption(group.groupKey, id);
+                    if (opt) total += opt.extraPrice;
+                });
+            }
         });
         return total;
     };
 
     const price = computePrice();
 
-    const hasCheese = getOption('cheese', selections.cheese)?.nameEn !== 'No Cheese';
-    const hasDoublePatty = getOption('patty', selections.patty)?.nameEn === 'Beef Double';
-    const hasToppings = selections.toppings.length > 0;
+    const cheeseGroup = groups.find((g) => g.groupKey.includes('cheese'));
+    const pattyGroup = groups.find((g) => g.groupKey.includes('patty'));
+    const toppingsGroup = groups.find((g) => !g.isSingleSelect);
+
+    const hasCheese = cheeseGroup
+        ? getOption(cheeseGroup.groupKey, selections[cheeseGroup.groupKey])?.nameEn?.toLowerCase() !== 'no cheese'
+        : false;
+    const hasDoublePatty = pattyGroup
+        ? getOption(pattyGroup.groupKey, selections[pattyGroup.groupKey])?.nameEn?.toLowerCase().includes('double')
+        : false;
+    const hasToppings = toppingsGroup ? (selections[toppingsGroup.groupKey] || []).length > 0 : false;
 
     const handleAddCustomBurger = () => {
-        const bunOpt = getOption('bun', selections.bun);
-        const pattyOpt = getOption('patty', selections.patty);
-        const cheeseOpt = getOption('cheese', selections.cheese);
-        const sauceOpt = getOption('sauce', selections.sauce);
-        const toppingOpts = selections.toppings.map((id) => getOption('toppings', id));
+        const parts = groups.flatMap((group) => {
+            if (group.isSingleSelect) {
+                const opt = getOption(group.groupKey, selections[group.groupKey]);
+                return opt ? [opt] : [];
+            }
+            return (selections[group.groupKey] || []).map((id) => getOption(group.groupKey, id)).filter(Boolean);
+        });
 
-        const descEn = [
-            bunOpt?.nameEn,
-            pattyOpt?.nameEn,
-            cheeseOpt?.nameEn,
-            `Sauce ${sauceOpt?.nameEn}`,
-            ...toppingOpts.map((t) => t.nameEn),
-        ].filter(Boolean).join(' | ');
-
-        const descAr = [
-            bunOpt?.nameAr,
-            pattyOpt?.nameAr,
-            cheeseOpt?.nameAr,
-            `صوص ${sauceOpt?.nameAr}`,
-            ...toppingOpts.map((t) => t.nameAr),
-        ].filter(Boolean).join(' | ');
+        const descEn = parts.map((p) => p.nameEn).join(' | ');
+        const descAr = parts.map((p) => p.nameAr).join(' | ');
 
         dispatch(addItem({
             menuItemId: null,
@@ -110,7 +102,7 @@ function BuilderSection() {
                     {group.options.map((opt) => {
                         const isSelected = single
                             ? selections[key] === opt.id
-                            : selections.toppings.includes(opt.id);
+                            : (selections[key] || []).includes(opt.id);
                         return (
                             <button
                                 key={opt.id}
@@ -123,7 +115,7 @@ function BuilderSection() {
                                     color: isSelected ? 'var(--maroon-950)' : 'white',
                                     fontWeight: 700,
                                 }}
-                                onClick={() => single ? selectSingle(key, opt.id) : toggleTopping(opt.id)}
+                                onClick={() => single ? selectSingle(key, opt.id) : toggleMulti(key, opt.id)}
                             >
                                 {opt.nameEn} <small>+{opt.extraPrice}</small>
                             </button>
@@ -146,11 +138,11 @@ function BuilderSection() {
                 <div className='row gy-5'>
                     <div className='col-md-6' style={{ color: 'var(--cream-50)' }}>
                         <div style={{ color: 'var(--cream-50)' }}>
-                            {renderGroup('bun', 'Bun', true)}
-                            {renderGroup('patty', 'Patty', true)}
-                            {renderGroup('cheese', 'Cheese', true)}
-                            {renderGroup('sauce', 'Sauce', true)}
-                            {renderGroup('toppings', 'Toppings (choose more than one)', false)}
+                            {groups.map((group) => (
+                                <div key={group.groupKey}>
+                                    {renderGroup(group.groupKey, group.groupKey.replace('_', ' '), group.isSingleSelect)}
+                                </div>
+                            ))}
                         </div>
 
                         <button

@@ -1,16 +1,26 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { setCustomerReceived } from './ordersSlice';
-import { useCustomerReceivedMutation } from './useCustomerReceivedMutation';
-
+import { useOrderDetailQuery, useCustomerReceivedMutation } from './useOrdersQueries';
 
 const STAGES = ['Confirmed', 'Preparing', 'On the way', 'Arrived'];
 
 function TrackingModal({ orderId, onClose, onReviewRequested }) {
-    const dispatch = useDispatch();
-    const order = useSelector((state) => state.orders.items.find((o) => o.orderId === orderId));
+    const { data: order, isLoading } = useOrderDetailQuery(orderId);
     const customerReceivedMutation = useCustomerReceivedMutation();
 
-    if (!order) return null;
+    if (!orderId) return null;
+
+    if (isLoading || !order) {
+        return (
+            <div
+                className="d-flex align-items-center justify-content-center"
+                style={{ position: 'fixed', inset: 0, background: 'rgba(20,6,6,.6)', zIndex: 130 }}
+                onClick={onClose}
+            >
+                <div className="bg-white p-4 rounded" onClick={(e) => e.stopPropagation()}>
+                    <p>Loading...</p>
+                </div>
+            </div>
+        );
+    }
 
     const handleReceived = () => {
         customerReceivedMutation.mutate(orderId, {
@@ -34,7 +44,6 @@ function TrackingModal({ orderId, onClose, onReviewRequested }) {
                     <button className="btn-close" onClick={onClose}></button>
                 </div>
 
-                {/* Progress bar */}
                 <div className="d-flex justify-content-between mb-4">
                     {STAGES.map((label, index) => (
                         <div key={label} className="text-center flex-fill">

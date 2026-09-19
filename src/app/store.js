@@ -13,6 +13,5 @@ export const store = configureStore({
     branch: branchReducer,
     orders: ordersReducer,
     language: languageReducer,
-
   },
 });

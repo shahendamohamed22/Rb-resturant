@@ -6,7 +6,7 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  console.log('STORE STATE:', store.getState()); // ← ضيفي السطر ده
+  console.log('STORE STATE:', store.getState()); 
   const token = store.getState().auth.token;
   const lang = store.getState().language.current;
 

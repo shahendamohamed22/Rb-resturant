@@ -10,6 +10,7 @@ function CheckoutModal({ show, onClose, onOrderConfirmed }) {
     const subtotal = useSelector(selectCartSubtotal);
     const selectedBranch = useSelector((state) => state.branch.selectedBranch);
     const customerName = useSelector((state) => state.auth.fullName);
+    const customerId = useSelector((state) => state.auth.customerId);
 
     const [name, setName] = useState(customerName || '');
     const [phone, setPhone] = useState('');
@@ -39,10 +40,10 @@ function CheckoutModal({ show, onClose, onOrderConfirmed }) {
                 ENDPOINTS.orders,
                 {
                     branchId: selectedBranch.id,
+                    customerId,
                     items: items.map((item) => ({
                         menuItemId: item.menuItemId,
                         quantity: item.quantity,
-                        // only sent for custom builder items (menuItemId is null)
                         ...(item.menuItemId === null && {
                             customName: { ar: item.nameAr, en: item.nameEn },
                             customDescription: { ar: item.descAr, en: item.descEn },
@@ -54,9 +55,7 @@ function CheckoutModal({ show, onClose, onOrderConfirmed }) {
                     deliveryAddress: address,
                     notes,
                     paymentMethod,
-                    subtotal,       
-                    deliveryFee: fee, 
-                    total,          
+                    idempotencyKey: crypto.randomUUID(),
                 },
                 { headers: { 'Idempotency-Key': crypto.randomUUID() } }
             );

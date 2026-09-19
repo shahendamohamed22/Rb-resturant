@@ -1,4 +1,7 @@
+import { useBranchesQuery } from '../../features/branches/useBranchesQuery';
+
 function Footer() {
+    const { data: branches = [] } = useBranchesQuery();
     return (
         <footer style={{ background: 'var(--maroon-950)', color: 'var(--cream-50)' }} className="py-5">
             <div className="container d-flex align-items-center justify-content-between">
@@ -12,8 +15,11 @@ function Footer() {
 
                 <div>
                     <p className="mb-1">Contact Us</p>
-                    <p className="mb-1" style={{ color: 'var(--gold-200)' }}>Sohag: 010-8023-4407</p>
-                    <p className="mb-3" style={{ color: 'var(--gold-200)' }}>Girga: 010-8022-4406</p>
+                    {branches.map((branch) => (
+                        <p key={branch.id} className="mb-1" style={{ color: 'var(--gold-200)' }}>
+                            {branch.nameEn}: {branch.hotline}
+                        </p>
+                    ))}
                 </div>
             </div>
         </footer>

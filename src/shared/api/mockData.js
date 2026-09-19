@@ -26,7 +26,6 @@ export const mockBranches = [
 ];
 
 // fake registered customer, for testing login
-// fake registered customer, for testing login
 export const mockCustomer = {
   phone: '12345',
   password: '12345',

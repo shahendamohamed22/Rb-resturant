@@ -12,12 +12,12 @@ import CheckoutModal from './features/checkout/CheckoutModal';
 import OrderConfirmationModal from './features/orders/OrderConfirmationModal';
 import TrackingModal from './features/orders/TrackingModal';
 import ReviewModal from './features/orders/ReviewModal';
-import { simulateOrderProgress } from './features/orders/simulateOrderProgress';
-import { addOrder } from './features/orders/ordersSlice';
+import { useQueryClient } from '@tanstack/react-query';
 import DriverApp from './features/driver/DriverApp';
 import HomeMenu from './features/menu/HomeMenu';
 
 function CustomerApp() {
+  const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const token = useSelector((state) => state.auth.token);
@@ -63,7 +63,7 @@ function CustomerApp() {
     <>
       <div className='page'>
         <Header onCartClick={() => setShowCart(true)} onAccountClick={handleAccountClick} />
-        <main className='content' style={{backgroundColor:'var(--cream-50)'}}>
+        <main className='content' style={{ backgroundColor: 'var(--cream-50)' }}>
           <Outlet context={{ onTrackOrder: setTrackingOrderId, onRateOrder: setReviewOrderId }} />
         </main>
 
@@ -86,14 +86,13 @@ function CustomerApp() {
         show={showProfile}
         onClose={() => setShowProfile(false)}
       />
-
+      
       <CheckoutModal
         show={showCheckout}
         onClose={() => setShowCheckout(false)}
         onOrderConfirmed={(order) => {
-          dispatch(addOrder(order));
+          queryClient.invalidateQueries({ queryKey: ['myOrders'] });
           setConfirmedOrder(order);
-          simulateOrderProgress(order.orderId);
           navigate('/orders');
         }}
       />

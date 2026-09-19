@@ -54,6 +54,9 @@ section[id] {
 /* section{
   margin-bottom: 130px;
 } */
+.active-nav{
+  color: var(--gold-400) !important ;
+}
 
 .page {
   min-height: 100vh;

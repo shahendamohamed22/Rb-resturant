@@ -5,7 +5,7 @@ import { useBranchesQuery } from '../../features/branches/useBranchesQuery';
 import { setSelectedBranch } from '../../features/branches/branchSlice';
 import { useTranslation } from 'react-i18next';
 import { toggleLanguage } from '../../features/languages/languageSlice';
-import { Link } from 'react-router-dom';
+import {Link , NavLink } from 'react-router-dom';
 
 function Header({ onCartClick, onAccountClick }) {
   const { t } = useTranslation();
@@ -16,6 +16,9 @@ function Header({ onCartClick, onAccountClick }) {
   const { data: branches } = useBranchesQuery();
   const selectedBranch = useSelector((state) => state.branch.selectedBranch);
 
+  function isActive({isActive}) {
+    return isActive ? "active-nav" : ""
+  }
   useEffect(() => {
     if (branches && branches.length > 0 && !selectedBranch) {
       dispatch(setSelectedBranch(branches[0]));
@@ -33,12 +36,10 @@ function Header({ onCartClick, onAccountClick }) {
 
         {/* Logo — always visible */}
         <Link to="/" className="d-flex align-items-center gap-2 text-decoration-none">
-          <div
-            className="rounded-circle d-flex align-items-center justify-content-center"
-            style={{ width: 44, height: 44, background: 'var(--gold-500)', fontFamily: 'var(--font-display)', fontSize: 22, color: 'var(--maroon-950)' }}
-          >
-            R
-          </div>
+          <img src="../../public/logo.png"
+            className=" d-flex align-items-center justify-content-center"
+            style={{ width: 44, height: 44, }} />
+       
           <span className='d-none d-lg-block' style={{ fontFamily: 'var(--font-display)', fontSize: 26, color: 'var(--gold-400)' }}>
             R Burger
           </span>
@@ -46,11 +47,11 @@ function Header({ onCartClick, onAccountClick }) {
 
         {/* Desktop nav links — hidden on mobile (d-none), shown from md breakpoint up */}
         <nav className="d-none d-md-flex align-items-center gap-4">
-          <Link to="/" style={{ color: 'var(--cream-50)', fontWeight: 700, textDecoration: 'none' }}>Home</Link>
-          <Link to="/menu" style={{ color: 'var(--cream-50)', fontWeight: 700, textDecoration: 'none' }}>Menu</Link>
-          <Link to="/builder" style={{ color: 'var(--cream-50)', fontWeight: 700, textDecoration: 'none' }}>Build</Link>
-          <Link to="/orders" style={{ color: 'var(--cream-50)', fontWeight: 700, textDecoration: 'none' }}>Orders</Link>
-          <Link to="/branches" style={{ color: 'var(--cream-50)', fontWeight: 700, textDecoration: 'none' }}>Branches</Link>
+          <NavLink className={isActive} to="/" style={{ color: 'var(--cream-50)', fontWeight: 700, textDecoration: 'none' }}>Home</NavLink>
+          <NavLink className={isActive} to="/menu" style={{ color: 'var(--cream-50)', fontWeight: 700, textDecoration: 'none' }}>Menu</NavLink>
+          <NavLink className={isActive} to="/builder" style={{ color: 'var(--cream-50)', fontWeight: 700, textDecoration: 'none' }}>Build</NavLink>
+          <NavLink className={isActive} to="/orders" style={{ color: 'var(--cream-50)', fontWeight: 700, textDecoration: 'none' }}>Orders</NavLink>
+          <NavLink className={isActive} to="/branches" style={{ color: 'var(--cream-50)', fontWeight: 700, textDecoration: 'none' }}>Branches</NavLink>
         </nav>
 
         {/* Right side: branch selector + cart + login — always visible */}

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import api from '../../shared/api/axiosClient';
-import { DRIVER_ENDPOINTS, ENDPOINTS } from '../../shared/api/endpoints';
+import { ENDPOINTS } from '../../shared/api/endpoints';
 import { setCredentials } from './authSlice';
 
 function AuthModal({ show, onClose, onSuccess }) {
@@ -34,19 +34,22 @@ function AuthModal({ show, onClose, onSuccess }) {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
     try {
-      const endpoint =
-        userType === 'customer'
-          ? ENDPOINTS.customerLogin
-          : DRIVER_ENDPOINTS.driverLogin;
+      const isDriver = userType === 'driver';
+      const endpoint = isDriver ? ENDPOINTS.driverLogin : ENDPOINTS.customerLogin;
 
       const response = await api.post(endpoint, { phone, password });
+
       dispatch(setCredentials({
         token: response.data.accessToken,
-        customerId: response.data.customerId,
+        refreshToken: response.data.refreshToken,
+        customerId: isDriver ? response.data.driverId : response.data.customerId,
         fullName: response.data.fullName,
-        role: response.data.role,
+        role: isDriver ? 'driver' : 'customer',
+        branchId: response.data.branchId ?? null,
       }));
+
       resetAndClose();
       onSuccess?.();
     } catch (err) {
@@ -81,9 +84,11 @@ function AuthModal({ show, onClose, onSuccess }) {
       });
       dispatch(setCredentials({
         token: response.data.accessToken,
+        refreshToken: response.data.refreshToken,
         customerId: response.data.customerId,
         fullName: response.data.fullName,
-        role: response.data.role
+        role: 'customer',
+        branchId: null,
       }));
       resetAndClose();
       onSuccess?.();
@@ -210,7 +215,7 @@ function AuthModal({ show, onClose, onSuccess }) {
           style={{
             fontSize: '.7rem',
             color: 'var(--maroon-800)',
-            
+
           }}
           onClick={() => {
             setUserType(userType === 'customer' ? 'driver' : 'customer');
@@ -218,7 +223,7 @@ function AuthModal({ show, onClose, onSuccess }) {
             setErrorMsg('');
           }}
         >
-          Login as a <span style={{color:"var(--gold-500)", cursor: 'pointer', }} >{userType === 'customer' ? 'driver' : 'customer'} </span>
+          Login as a <span style={{ color: "var(--gold-500)", cursor: 'pointer', }} >{userType === 'customer' ? 'driver' : 'customer'} </span>
         </p>
       </div>
     </div>

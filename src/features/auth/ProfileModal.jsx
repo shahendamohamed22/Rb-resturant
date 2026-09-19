@@ -1,7 +1,9 @@
-import { useDispatch } from 'react-redux';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from './authSlice';
 import { useCustomerMeQuery } from './useCustomerMeQuery';
-import { useSelector } from 'react-redux';
+import api from '../../shared/api/axiosClient';
+import { ENDPOINTS } from '../../shared/api/endpoints';
 
 const STAGE_LABELS = ['Confirmed', 'Preparing', 'On the way', 'Delivered'];
 
@@ -10,12 +12,24 @@ function ProfileModal({ show, onClose }) {
   const { data: customer, isLoading } = useCustomerMeQuery();
   const orders = useSelector((state) => state.orders.items);
 
+  const refreshToken = useSelector((state) => state.auth.refreshToken);
+  const [loggingOut, setLoggingOut] = useState(false);
+
   if (!show) return null;
 
-  const handleLogout = () => {
-    dispatch(logout());
-    onClose();
-  };
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    try {
+      await api.post(ENDPOINTS.logout, { refreshToken });
+    } catch (err) {
+      console.error('LOGOUT ERROR:', err);
+    } finally {
+      dispatch(logout());
+      setLoggingOut(false);
+      onClose();
+    }
+   };
+  
 
   return (
     <div
@@ -79,8 +93,9 @@ function ProfileModal({ show, onClose }) {
           className="btn w-100"
           style={{ border: '1.5px solid var(--maroon-800)', color: 'var(--maroon-800)', fontWeight: 700 }}
           onClick={handleLogout}
+          disabled={loggingOut}
         >
-          Logout
+          {loggingOut ? 'Logging out...' : 'Logout'}
         </button>
       </div>
     </div>
