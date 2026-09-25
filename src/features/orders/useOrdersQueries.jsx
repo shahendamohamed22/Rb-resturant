@@ -1,14 +1,17 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../../shared/api/axiosClient';
 import { ENDPOINTS } from '../../shared/api/endpoints';
+import { useSelector } from 'react-redux';
 
 export function useMyOrdersQuery() {
+  const token = useSelector((state) => state.auth.token);
   return useQuery({
     queryKey: ['myOrders'],
     queryFn: async () => {
       const response = await api.get(ENDPOINTS.myOrders());
       return response.data.items;
     },
+    enabled: !!token,
   });
 }
 

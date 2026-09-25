@@ -17,7 +17,7 @@ function Footer() {
                     <p className="mb-1">Contact Us</p>
                     {branches.map((branch) => (
                         <p key={branch.id} className="mb-1" style={{ color: 'var(--gold-200)' }}>
-                            {branch.nameEn}: {branch.hotline}
+                            {branch.nameEn}: {branch.hotlinePhones}
                         </p>
                     ))}
                 </div>

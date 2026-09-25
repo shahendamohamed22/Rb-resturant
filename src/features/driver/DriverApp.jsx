@@ -1,40 +1,76 @@
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateOrderStage, markDriverAssigned } from '../orders/ordersSlice';
+import api from '../../shared/api/axiosClient';
+import { ENDPOINTS } from '../../shared/api/endpoints';
 import { logout } from '../auth/authSlice';
+import {
+  useDriverNewOrdersQuery,
+  useDriverMyOrdersQuery,
+  useReceiveOrderMutation,
+  useShipOrderMutation,
+  useDeliverOrderMutation,
+} from './useDriverOrdersQueries';
+
+const STAGE_PREPARING = 1;
+const STAGE_ON_THE_WAY = 2;
+const STAGE_AWAITING_CONFIRMATION = 3;
+
+function formatApiError(err) {
+  const data = err.response?.data;
+  if (!data) return 'حصل خطأ، حاول تاني.';
+  if (data.errors) {
+    return Object.values(data.errors).flat().join(' — ');
+  }
+  return data.title || 'حصل خطأ، حاول تاني.';
+}
 
 function DriverApp() {
   const dispatch = useDispatch();
   const fullName = useSelector((state) => state.auth.fullName);
-  const allOrders = useSelector((state) => state.orders.items);
+  const refreshToken = useSelector((state) => state.auth.refreshToken);
 
   const [activeTab, setActiveTab] = useState('new'); // 'new' | 'active' | 'completed'
-  const [readyToDeliver, setReadyToDeliver] = useState({}); // { [orderId]: true }
+  const [actionError, setActionError] = useState('');
 
-  const newOrders = allOrders.filter((o) => !o.driverAssigned && o.stage <= 1);
-  const activeOrders = allOrders.filter((o) => o.driverAssigned && o.stage < 3);
-  const completedOrders = allOrders.filter((o) => o.stage === 3);
+  const { data: newOrders = [], isLoading: newLoading } = useDriverNewOrdersQuery();
+  const { data: activeOrders = [], isLoading: mineLoading } = useDriverMyOrdersQuery('active');
+  const { data: completedOrders = [] } = useDriverMyOrdersQuery('completed');
+
+  const receiveMutation = useReceiveOrderMutation();
+  const shipMutation = useShipOrderMutation();
+  const deliverMutation = useDeliverOrderMutation();
 
   const handleReceive = (orderId) => {
-    dispatch(updateOrderStage({ orderId, stage: 1 }));
-    dispatch(markDriverAssigned(orderId));
-    setActiveTab('active');
+    setActionError('');
+    receiveMutation.mutate({ orderId, status: STAGE_PREPARING }, {
+      onSuccess: () => setActiveTab('active'),
+      onError: (err) => setActionError(formatApiError(err)),
+    });
   };
 
   const handleStartDelivery = (orderId) => {
-    dispatch(updateOrderStage({ orderId, stage: 2 }));
-    // simulate driving time before "delivered" button becomes available
-    setTimeout(() => {
-      setReadyToDeliver((prev) => ({ ...prev, [orderId]: true }));
-    }, 8000);
+    setActionError('');
+    shipMutation.mutate({ orderId, status: STAGE_ON_THE_WAY }, {
+      onError: (err) => setActionError(formatApiError(err)),
+    });
   };
 
-  const handleDeliver = (orderId) => {
-    dispatch(updateOrderStage({ orderId, stage: 3 }));
-    setActiveTab('completed');
+  const handleArrived = (orderId) => {
+    setActionError('');
+    deliverMutation.mutate({ orderId, status: STAGE_AWAITING_CONFIRMATION }, {
+      onError: (err) => setActionError(formatApiError(err)),
+    });
   };
 
-  const handleLogout = () => dispatch(logout());
+  const handleLogout = async () => {
+    try {
+      await api.post(ENDPOINTS.logout, { refreshToken });
+    } catch (err) {
+      console.error('LOGOUT ERROR:', err);
+    } finally {
+      dispatch(logout());
+    }
+  };
 
   const tabs = [
     { key: 'new', label: 'طلبات جديدة', count: newOrders.length },
@@ -44,7 +80,6 @@ function DriverApp() {
 
   return (
     <div dir="rtl" style={{ minHeight: '100vh', background: 'var(--cream-50)' }}>
-      {/* هيدر الدرايفر */}
       <header style={{ background: 'var(--maroon-950)', color: 'var(--cream-50)' }} className="py-3 mb-4">
         <div className="container d-flex justify-content-between align-items-center">
           <div>
@@ -64,21 +99,17 @@ function DriverApp() {
       </header>
 
       <div className="container pb-5">
-        {/* بانر تنبيه */}
-        <div
-          className="p-3 mb-4 text-center"
-          style={{ background: 'var(--gold-200)', borderRadius: 'var(--radius-card)', color: 'var(--ink-900)' }}
-        >
-          ✏️ دي معاينة مستقلة لواجهة المندوب. دلوقتي الطلبات هنا بيانات تجريبية مش متصلة بموقع العميل فعليًا؛
-          لما ندمج الواجهتين واحد بتسجيل دخول واحد (عميل / مندوب)، أي تحديث هنا هيظهر لحظيًا في تطبيق العميل.
-        </div>
+        {actionError && (
+          <div className="p-2 mb-3 text-center text-danger" style={{ background: '#F3DCDC', borderRadius: 10, fontSize: 13 }}>
+            {actionError}
+          </div>
+        )}
 
-        {/* كروت الإحصائيات */}
         <div className="row g-3 mb-4">
           <div className="col-4">
             <div className="p-3 text-center bg-white" style={{ borderRadius: 'var(--radius-card)', boxShadow: 'var(--shadow-card)' }}>
               <h3 style={{ color: 'var(--maroon-800)', fontFamily: 'var(--font-display)' }}>{completedOrders.length}</h3>
-              <small className="text-muted">مكتملة اليوم</small>
+              <small className="text-muted">مكتملة</small>
             </div>
           </div>
           <div className="col-4">
@@ -95,7 +126,6 @@ function DriverApp() {
           </div>
         </div>
 
-        {/* التابات */}
         <div className="d-flex justify-content-center-start gap-2 mb-4">
           {tabs.map((tab) => (
             <button
@@ -110,31 +140,30 @@ function DriverApp() {
               }}
               onClick={() => setActiveTab(tab.key)}
             >
-              {tab.label}
+              {tab.label} ({tab.count})
             </button>
           ))}
         </div>
 
-        {/* محتوى التابة: طلبات جديدة */}
         {activeTab === 'new' && (
-          newOrders.length === 0 ? (
+          newLoading ? (
+            <p className="text-muted text-center">جاري التحميل...</p>
+          ) : newOrders.length === 0 ? (
             <p className="text-muted text-center">مفيش طلبات جديدة دلوقتي, تابع من هنا اول ما يوصلك طلب.</p>
           ) : (
             newOrders.map((order) => (
               <div key={order.orderId} className="p-3 mb-3 bg-white" style={{ borderRadius: 'var(--radius-card)', boxShadow: 'var(--shadow-card)' }}>
                 <div className="d-flex justify-content-between align-items-center mb-2">
                   <span className="badge" style={{ background: 'var(--gold-300)', color: 'var(--maroon-950)' }}>جاهز للاستلام</span>
-                  <h5 className="mb-0">طلب #{order.orderNumber} — فرع {order.branchName || 'سوهاج'}</h5>
+                  <h5 className="mb-0">طلب #{order.orderNumber}</h5>
                 </div>
-                <p className="mb-1 text-muted">📍 {order.deliveryAddress || 'العنوان غير متوفر'}</p>
-                <p className="mb-1 text-muted">
-                  {order.items?.map((i) => `${i.quantity}× ${i.nameAr || i.nameEn}`).join(' — ')}
-                </p>
-                <p className="mb-3 text-muted">👤 العميل: {order.customerName} — 📱 {order.customerPhone}</p>
-                <div className="d-flex justify-content-between align-items-center">
+                <p className="mb-1 text-muted">📍 {order.customerAddress || 'العنوان غير متوفر'}</p>
+                {order.notes && <p className="mb-1 text-muted">📝 {order.notes}</p>}
+                <div className="d-flex justify-content-between align-items-center mt-2">
                   <button
                     className="btn"
                     style={{ background: 'var(--blue-600)', color: '#fff' }}
+                    disabled={receiveMutation.isPending}
                     onClick={() => handleReceive(order.orderId)}
                   >
                     📄 استلمت الطلب من الفرع
@@ -146,53 +175,60 @@ function DriverApp() {
           )
         )}
 
-        {/* محتوى التابة: طلباتي الجارية */}
         {activeTab === 'active' && (
-          activeOrders.length === 0 ? (
+          mineLoading ? (
+            <p className="text-muted text-center">جاري التحميل...</p>
+          ) : activeOrders.length === 0 ? (
             <p className="text-muted text-center">مفيش طلبات شغالة عندك دلوقتي.</p>
           ) : (
             activeOrders.map((order) => (
               <div key={order.orderId} className="p-3 mb-3 bg-white" style={{ borderRadius: 'var(--radius-card)', boxShadow: 'var(--shadow-card)' }}>
                 <div className="d-flex justify-content-between align-items-center mb-2">
                   <span className="badge" style={{ background: 'var(--blue-600)' }}>
-                    {order.stage === 1 ? 'مستلم من الفرع' : 'في الطريق'}
+                    {order.stage === STAGE_PREPARING && 'تم الاستلام'}
+                    {order.stage === STAGE_ON_THE_WAY && 'في الطريق'}
+                    {order.stage === STAGE_AWAITING_CONFIRMATION && 'وصلت — في انتظار تأكيد العميل'}
                   </span>
                   <h5 className="mb-0">طلب #{order.orderNumber}</h5>
                 </div>
-                <p className="mb-3 text-muted">📍 {order.deliveryAddress || 'العنوان غير متوفر'}</p>
+                <p className="mb-1 text-muted">📍 {order.customerAddress || 'العنوان غير متوفر'}</p>
+                {order.customerPhone && <p className="mb-3 text-muted">📱 {order.customerPhone}</p>}
 
-                {order.stage === 1 && (
+                {order.stage === STAGE_PREPARING && (
                   <button
                     className="btn w-100"
                     style={{ background: 'var(--gold-500)', color: 'var(--maroon-950)', fontWeight: 700 }}
+                    disabled={shipMutation.isPending}
                     onClick={() => handleStartDelivery(order.orderId)}
                   >
                     🛵 بدء التوصيل
                   </button>
                 )}
 
-                {order.stage === 2 && (
-                  readyToDeliver[order.orderId] ? (
-                    <button
-                      className="btn w-100"
-                      style={{ background: 'var(--green-600)', color: '#fff', fontWeight: 700 }}
-                      onClick={() => handleDeliver(order.orderId)}
-                    >
-                      ✅ تم التسليم للعميل
-                    </button>
-                  ) : (
-                    <p className="text-center text-muted mb-0">🚴‍♂️ في الطريق للعميل...</p>
-                  )
+                {order.stage === STAGE_ON_THE_WAY && (
+                  <button
+                    className="btn w-100"
+                    style={{ background: 'var(--green-600)', color: '#fff', fontWeight: 700 }}
+                    disabled={deliverMutation.isPending}
+                    onClick={() => handleArrived(order.orderId)}
+                  >
+                    ✅ وصلت للعميل
+                  </button>
+                )}
+
+                {order.stage === STAGE_AWAITING_CONFIRMATION && (
+                  <p className="text-center text-muted mb-0" style={{ fontSize: 13 }}>
+                    مستني العميل يأكد الاستلام من تطبيقه...
+                  </p>
                 )}
               </div>
             ))
           )
         )}
 
-        {/* محتوى التابة: المكتملة */}
         {activeTab === 'completed' && (
           completedOrders.length === 0 ? (
-            <p className="text-muted text-center">لسه معملتش تسليم النهاردة.</p>
+            <p className="text-muted text-center">لسه معملتش تسليم.</p>
           ) : (
             completedOrders.map((order) => (
               <div key={order.orderId} className="d-flex justify-content-between align-items-center p-3 mb-2" style={{ background: '#fff', borderRadius: 'var(--radius-card)', opacity: 0.7 }}>

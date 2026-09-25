@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate , useOutletContext } from 'react-router-dom';
 
 import Header from './shared/components/Header';
 import Footer from './shared/components/Footer';
@@ -64,7 +64,8 @@ function CustomerApp() {
       <div className='page'>
         <Header onCartClick={() => setShowCart(true)} onAccountClick={handleAccountClick} />
         <main className='content' style={{ backgroundColor: 'var(--cream-50)' }}>
-          <Outlet context={{ onTrackOrder: setTrackingOrderId, onRateOrder: setReviewOrderId }} />
+          <Outlet context={{ onTrackOrder: setTrackingOrderId, onRateOrder: setReviewOrderId ,
+          onLoginRequest: () => { setAuthIntent(null); setShowAuth(true); }, }} />
         </main>
 
         <Footer />
