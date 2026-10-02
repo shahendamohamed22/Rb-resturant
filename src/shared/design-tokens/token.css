@@ -114,7 +114,7 @@ section[id] {
   flex-shrink: 0;
 }
 
-.menu-item-img::before{
+/* .menu-item-img::before{
    content: '';
     position: absolute;
     width: 90px;
@@ -125,7 +125,7 @@ section[id] {
     left: -10px;
     transform: rotate(-5deg);
     filter: blur(1px);
-}
+} */
 
 .menu-item-info {
   flex: 1;

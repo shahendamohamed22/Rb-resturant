@@ -7,6 +7,9 @@ export function useBranchesQuery() {
     queryKey: ['branches'],
     queryFn: async () => {
       const response = await api.get(ENDPOINTS.branches);
+
+        console.log('Branches API response:', response.data);
+
       return response.data;
     },
   });
