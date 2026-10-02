@@ -6,7 +6,7 @@ function PaymentModal({ orderId, iframeUrl, initialStatus, onClose, onPaid }) {
     const currentStatus = order?.payment?.status;
 
     if (currentStatus && currentStatus !== initialStatus) {
-        onPaid();
+        onPaid(order);
         return null;
     }
 

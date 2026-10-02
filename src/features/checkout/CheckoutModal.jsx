@@ -84,7 +84,7 @@ function CheckoutModal({ show, onClose, onOrderConfirmed }) {
                             iframeUrl,
                             status: payment.status,
                         });
-                        return; 
+                        return;
                     }
                 } catch (chargeErr) {
                     dispatch(clearCart());
@@ -202,8 +202,8 @@ function CheckoutModal({ show, onClose, onOrderConfirmed }) {
                     iframeUrl={paymentInfo.iframeUrl}
                     initialStatus={paymentInfo.status}
                     onClose={() => setPaymentInfo(null)}
-                    onPaid={() => {
-                        onOrderConfirmed({ orderId: paymentInfo.orderId });
+                    onPaid={(fullOrder) => {
+                        onOrderConfirmed(fullOrder);
                         setPaymentInfo(null);
                     }}
                 />
