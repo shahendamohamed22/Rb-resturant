@@ -5,7 +5,7 @@ import { useBranchesQuery } from '../../features/branches/useBranchesQuery';
 import { setSelectedBranch } from '../../features/branches/branchSlice';
 import { useTranslation } from 'react-i18next';
 import { toggleLanguage } from '../../features/languages/languageSlice';
-import {Link , NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 function Header({ onCartClick, onAccountClick }) {
   const { t } = useTranslation();
@@ -16,7 +16,7 @@ function Header({ onCartClick, onAccountClick }) {
   const { data: branches } = useBranchesQuery();
   const selectedBranch = useSelector((state) => state.branch.selectedBranch);
 
-  function isActive({isActive}) {
+  function isActive({ isActive }) {
     return isActive ? "active-nav" : ""
   }
   useEffect(() => {
@@ -36,10 +36,10 @@ function Header({ onCartClick, onAccountClick }) {
 
         {/* Logo — always visible */}
         <Link to="/" className="d-flex align-items-center gap-2 text-decoration-none">
-          <img src="../../public/logo.png"
+          <img src="/logo.png"
             className=" d-flex align-items-center justify-content-center"
             style={{ width: 44, height: 44, }} />
-       
+
           <span className='d-none d-lg-block' style={{ fontFamily: 'var(--font-display)', fontSize: 26, color: 'var(--gold-400)' }}>
             R Burger
           </span>
@@ -84,7 +84,7 @@ function Header({ onCartClick, onAccountClick }) {
             onClick={onCartClick}
           >
             <i className="fa-solid fa-cart-shopping"></i>
-            <span className='d-none d-md-inline-block' >Cart</span> 
+            <span className='d-none d-md-inline-block' >Cart</span>
             {cartCount > 0 && (
               <span
                 className="position-absolute top-0 start-100 translate-middle badge rounded-pill"
@@ -101,7 +101,7 @@ function Header({ onCartClick, onAccountClick }) {
             onClick={onAccountClick}
           >
             <i className="fa-solid fa-user"></i>
-             <span className='d-md-inline-block d-none'>{fullName ? fullName.split(' ')[0] : 'Login'}</span>
+            <span className='d-md-inline-block d-none'>{fullName ? fullName.split(' ')[0] : 'Login'}</span>
           </button>
         </div>
       </div>

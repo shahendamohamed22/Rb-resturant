@@ -67,28 +67,6 @@ function ProfileModal({ show, onClose }) {
           </div>
         )}
 
-        {/* Order history */}
-        <div className="mb-4">
-          <h5 style={{ color: 'var(--maroon-800)' }}>Order History</h5>
-          {orders.length === 0 ? (
-            <p className="text-muted small">No previous orders yet.</p>
-          ) : (
-            orders.map((order) => (
-              <div
-                key={order.orderId}
-                className="d-flex justify-content-between align-items-center p-2 mb-2"
-                style={{ background: 'var(--cream-50)', borderRadius: 12 }}
-              >
-                <div>
-                  <p className="mb-0" style={{ fontWeight: 600, fontSize: 14 }}>Order #{order.orderNumber}</p>
-                  <small className="text-muted">{STAGE_LABELS[order.stage]}</small>
-                </div>
-                <p className="mb-0" style={{ fontWeight: 700, color: 'var(--maroon-800)' }}>{order.total} EGP</p>
-              </div>
-            ))
-          )}
-        </div>
-
         <button
           className="btn w-100"
           style={{ border: '1.5px solid var(--maroon-800)', color: 'var(--maroon-800)', fontWeight: 700 }}
